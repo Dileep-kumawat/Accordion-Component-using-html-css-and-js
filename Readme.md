@@ -51,7 +51,7 @@ This component uses advanced CSS transitions, subtle glow effects, and accessibi
 ### 1. Clone or Download
 
 ```
-git clone 
+git clone https://github.com/Dileep-kumawat/Accordion-Component-using-html-css-and-js.git
 ```
 
 ### 2. Open the project
@@ -107,7 +107,7 @@ A tiny script toggles the “active” state:
 
 ## 🌐 Live Demo
 
-🔗 Live Site: []()
+🔗 Live Site: [https://dileep-kumawat.github.io/Accordion-Component-using-html-css-and-js/](https://dileep-kumawat.github.io/Accordion-Component-using-html-css-and-js/)
 
 
 
