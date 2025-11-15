@@ -1,0 +1,187 @@
+/* Replace your style.css with this file */
+
+/* ---------------------------
+   Theme variables
+   --------------------------- */
+:root{
+  --bg-a: #0f1724;
+  --bg-b: #0b1220;
+  --card-bg: rgba(255,255,255,0.04);
+  --card-glow: rgba(99,102,241,0.12);
+  --accent: #7c3aed;        /* purple accent */
+  --muted: #9aa4b2;
+  --text: #e6eef6;
+  --radius: 14px;
+  --gap: 18px;
+  --transition: 320ms cubic-bezier(.2,.9,.3,1);
+  --max-panel-height: 420px; /* max expanded content height (safe large value) */
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+               Roboto, "Helvetica Neue", Arial;
+  font-size: 16px;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* ---------------------------
+   Page layout
+   --------------------------- */
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{
+  min-height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:40px;
+  background:linear-gradient(160deg,var(--bg-a),var(--bg-b) 60%);
+  color:var(--text);
+}
+
+/* Main container to center accordion */
+main{
+  width:100%;
+  max-width:820px;
+}
+
+/* ---------------------------
+   Accordion list reset
+   --------------------------- */
+ul{list-style:none;padding:0;margin:0;display:grid;gap:var(--gap)}
+li{
+  position:relative;
+  overflow:hidden;
+  border-radius:var(--radius);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  box-shadow: 0 6px 18px rgba(2,6,23,0.6), 0 1px 0 rgba(255,255,255,0.02) inset;
+  border:1px solid rgba(255,255,255,0.03);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+/* subtle glow when active (when header has .select) */
+li h1.select {
+  transform: translateY(-1px);
+}
+li:hover{ transform: translateY(-4px); box-shadow: 0 12px 30px rgba(2,6,23,0.7); }
+
+/* decorative accent bar on left */
+li::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  width:6px;
+  background: linear-gradient(180deg,var(--accent), #4f46e5);
+  opacity:0.0;
+  transform: scaleY(0.95);
+  transition: opacity var(--transition), transform var(--transition);
+  border-top-left-radius:var(--radius);
+  border-bottom-left-radius:var(--radius);
+}
+li h1.select ~ p, li h1.select + p /*safe selector fallback*/ {
+  /* when selected, make bar visible */
+}
+li h1.select ~ p ~ * { /* no-op to keep specificity */ }
+
+/* show the bar when header has select */
+li h1.select ~ p,
+li h1.select + p {
+  /* we target li::before via parent state using sibling header...*/
+}
+li:has(h1.select)::before{
+  opacity:1;
+  transform: scaleY(1);
+}
+
+/* ---------------------------
+   Header (clickable)
+   --------------------------- */
+li h1{
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:20px 22px;
+  font-size:1.05rem;
+  font-weight:600;
+  color:var(--text);
+  letter-spacing:0.2px;
+  user-select:none;
+  background:linear-gradient(90deg, transparent 0%, transparent 70%);
+  transition: background var(--transition), color var(--transition);
+  outline: none;
+}
+
+/* small subtitle area on right (chevron) via pseudo */
+li h1::after{
+  content: "▾";
+  display:inline-block;
+  transform-origin:center;
+  transition: transform var(--transition), opacity var(--transition);
+  opacity:0.9;
+  font-size:1.05rem;
+  margin-left:10px;
+  color:var(--muted);
+}
+
+/* rotate chevron when selected */
+li h1.select::after{
+  transform: rotate(-180deg) translateY(1px);
+  color:var(--accent);
+}
+
+/* header hover / focus */
+li h1:hover{ color:var(--text)}
+li h1:focus{ box-shadow: 0 0 0 4px rgba(124,58,237,0.12); border-radius:10px; }
+
+/* ---------------------------
+   Panel (content)
+   --------------------------- */
+li p{
+  margin:0;
+  padding:0 22px;
+  color:var(--muted);
+  font-weight:400;
+  line-height:1.6;
+  /* collapse using max-height for smooth transition */
+  max-height:0;
+  overflow:hidden;
+  transition: max-height var(--transition), padding var(--transition), opacity var(--transition);
+  opacity:0;
+  padding-bottom:0;
+  padding-top:0;
+}
+
+/* when header has select, expand the adjacent paragraph */
+li h1.select + p{
+  opacity:1;
+  padding:18px 22px 20px 22px;
+  max-height: var(--max-panel-height);
+}
+
+/* make long text wrap nicely */
+li p code, li p strong { color:var(--text); font-weight:600; }
+
+/* ---------------------------
+   Small helpers & responsiveness
+   --------------------------- */
+@media (max-width:640px){
+  body{padding:20px}
+  :root{ --gap:12px; --radius:12px; }
+  li h1{ padding:16px; font-size:1rem }
+  li p{ padding:12px 16px 16px 16px }
+  main{ max-width:520px; }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce){
+  *{ transition: none !important; animation: none !important; }
+}
+
+/* Accessibility: keyboard focus on li's header (make H1 focusable even if not a button) */
+li h1{ outline: none; }
+li h1[tabindex="-1"]{ outline: none; }
+
+/* If your h1 elements are not focusable, make them keyboard-accessible by adding tabindex in HTML
+   (optional): <h1 tabindex="0"> ... </h1>  - your JS still works when user presses Enter/Space. */
